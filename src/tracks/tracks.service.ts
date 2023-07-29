@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { tracks } from 'src/data/storage';
+import { favorites, tracks } from 'src/data/storage';
 import { Track } from './entities/track.entity';
 
 @Injectable()
@@ -29,6 +29,7 @@ export class TracksService {
 
   update(id: string, updateTrackDto: UpdateTrackDto) {
     const track = tracks.find((u) => u.id === id);
+    console.log(tracks, id);
     if (!track) throw new NotFoundException();
     track.name = updateTrackDto.name;
     track.duration = updateTrackDto.duration;
@@ -41,5 +42,6 @@ export class TracksService {
     const index = tracks.findIndex((u) => u.id === id);
     if (index === -1) throw new NotFoundException();
     tracks.splice(index, 1);
+    favorites.removeTrack(id);
   }
 }

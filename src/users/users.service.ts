@@ -31,7 +31,7 @@ export class UsersService {
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const user = users.find((u) => u.id === id);
     if (!user) throw new NotFoundException();
-    if (!bcrypt.compare(updatePasswordDto.oldPassword, user.password))
+    if (!(await bcrypt.compare(updatePasswordDto.oldPassword, user.password)))
       throw new HttpException('Old password is wrong', 403);
 
     user.password = await bcrypt.hash(

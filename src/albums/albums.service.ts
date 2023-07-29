@@ -2,13 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
-import { albums } from 'src/data/storage';
+import { albums, favorites, tracks } from 'src/data/storage';
 
 @Injectable()
 export class AlbumsService {
   create(createAlbumDto: CreateAlbumDto) {
     const album = new Album(
       createAlbumDto.year,
+      createAlbumDto.name,
       createAlbumDto.artistId || null,
     );
     albums.push(album);
@@ -37,5 +38,9 @@ export class AlbumsService {
     const index = albums.findIndex((u) => u.id === id);
     if (index === -1) throw new NotFoundException();
     albums.splice(index, 1);
+    favorites.removeAlbum(id);
+    tracks.forEach((t) => {
+      if (t.albumId === id) t.albumId = null;
+    });
   }
 }
