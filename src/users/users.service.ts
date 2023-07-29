@@ -3,8 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
-
-const users: User[] = [];
+import { users } from 'src/data/storage';
 
 @Injectable()
 export class UsersService {

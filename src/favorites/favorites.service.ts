@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
-import { Favorite } from './entities/favorite.entity';
-
-const favorites = new Favorite();
+import { favorites } from 'src/data/storage';
 
 @Injectable()
 export class FavoritesService {

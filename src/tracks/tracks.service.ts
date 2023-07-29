@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { tracks } from 'src/data/storage';
 import { Track } from './entities/track.entity';
-
-const tracks: Track[] = [];
 
 @Injectable()
 export class TracksService {

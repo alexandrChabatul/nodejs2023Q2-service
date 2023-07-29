@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { v4 as uuidv4 } from 'uuid';
 import { Artist } from './entities/artist.entity';
-
-const artists: Artist[] = [];
+import { artists } from 'src/data/storage';
 
 @Injectable()
 export class ArtistsService {
