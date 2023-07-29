@@ -24,13 +24,13 @@ export class UsersService {
   }
 
   findOne(id: string) {
-    const user = users.find((u) => u.id === String(id));
+    const user = users.find((u) => u.id === id);
     if (!user) throw new NotFoundException();
     return user;
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
-    const user = users.find((u) => u.id === String(id));
+    const user = users.find((u) => u.id === id);
     if (!user) throw new NotFoundException();
     if (!bcrypt.compare(updatePasswordDto.oldPassword, user.password))
       throw new HttpException('Old password is wrong', 403);
