@@ -1,9 +1,8 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './types/user.interface';
-import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { User } from './entities/user.entity';
 
 const users: User[] = [];
 
@@ -12,14 +11,10 @@ export class UsersService {
   saltOrRounds = 7;
 
   async create(createUserDto: CreateUserDto) {
-    const user = {
-      id: uuidv4(),
-      login: createUserDto.login,
-      password: await bcrypt.hash(createUserDto.password, this.saltOrRounds),
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
+    const user = new User(
+      createUserDto.login,
+      await bcrypt.hash(createUserDto.password, this.saltOrRounds),
+    );
     users.push(user);
     return user;
   }
