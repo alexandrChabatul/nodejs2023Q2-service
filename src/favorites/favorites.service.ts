@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { albums, artists, favorites, tracks } from 'src/data/storage';
+import { albums, artists, favorites, tracks } from '../data/storage';
 
 @Injectable()
 export class FavoritesService {

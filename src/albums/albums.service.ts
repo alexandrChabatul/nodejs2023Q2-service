@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
-import { albums, favorites, tracks } from 'src/data/storage';
+import { albums, favorites, tracks } from '../data/storage';
 
 @Injectable()
 export class AlbumsService {

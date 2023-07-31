@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
-import { users } from 'src/data/storage';
+import { users } from '../data/storage';
 
 @Injectable()
 export class UsersService {

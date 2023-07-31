@@ -1,5 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
-
 export class Favorite {
   artists: string[] = []; // favorite artists ids
   albums: string[] = []; // favorite albums ids
