@@ -6,9 +6,8 @@ import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { ConfigModule } from '@nestjs/config';
-import { configuration } from './lib/config/configuration';
-import { validationSchema } from './lib/config/validation';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -19,8 +18,22 @@ import { validationSchema } from './lib/config/validation';
     FavoritesModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
-      validationSchema,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        type: config.get<'postgres'>('TYPEORM_CONNECTION'),
+        username: config.get<'string'>('TYPEORM_USERNAME'),
+        password: config.get<'string'>('TYPEORM_PASSWORD'),
+        database: config.get<'string'>('TYPEORM_DATABASE'),
+        ports: config.get<'number'>('TYPEORM_PORT'),
+        entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        autoLoadEntities: true,
+        logging: true,
+      }),
     }),
   ],
   controllers: [AppController],
