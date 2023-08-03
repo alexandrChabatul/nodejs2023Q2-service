@@ -29,14 +29,14 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  findAll(): User[] {
-    return this.usersService.findAll();
+  async findAll(): Promise<User[]> {
+    return await this.usersService.findAll();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string): User {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<User> {
+    return await this.usersService.findOne(id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -50,7 +50,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.usersService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.usersService.remove(id);
   }
 }

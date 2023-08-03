@@ -4,48 +4,52 @@ import * as bcrypt from 'bcrypt';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
 import { users } from '../data/storage';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { PassThrough } from 'stream';
 
 @Injectable()
 export class UsersService {
   saltOrRounds = 7;
 
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
   async create(createUserDto: CreateUserDto) {
-    const user = new User(
-      createUserDto.login,
-      await bcrypt.hash(createUserDto.password, this.saltOrRounds),
+    const password = await bcrypt.hash(
+      createUserDto.password,
+      this.saltOrRounds,
     );
-    users.push(user);
-    return user;
+    return await this.userRepository.save({
+      login: createUserDto.login,
+      password,
+    });
   }
 
-  findAll() {
-    return users;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
-  findOne(id: string) {
-    const user = users.find((u) => u.id === id);
-    if (!user) throw new NotFoundException();
-    return user;
+  async findOne(id: string) {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
-    const user = users.find((u) => u.id === id);
+    const user = await this.findOne(id);
     if (!user) throw new NotFoundException();
     if (!(await bcrypt.compare(updatePasswordDto.oldPassword, user.password)))
       throw new HttpException('Old password is wrong', 403);
-
-    user.password = await bcrypt.hash(
+    const newPassword = await bcrypt.hash(
       updatePasswordDto.newPassword,
       this.saltOrRounds,
     );
-    user.updatedAt = Date.now();
-    user.version = user.version + 1;
-    return user;
+    await this.userRepository.update({ id }, { password: newPassword });
+    return await this.findOne(id);
   }
 
-  remove(id: string) {
-    const index = users.findIndex((u) => u.id === id);
-    if (index === -1) throw new NotFoundException();
-    users.splice(index, 1);
+  async remove(id: string) {
+    return await this.userRepository.delete({ id });
   }
 }
