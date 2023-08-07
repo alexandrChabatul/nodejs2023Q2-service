@@ -29,7 +29,6 @@ export class TracksService {
 
   update(id: string, updateTrackDto: UpdateTrackDto) {
     const track = tracks.find((u) => u.id === id);
-    console.log(tracks, id);
     if (!track) throw new NotFoundException();
     track.name = updateTrackDto.name;
     track.duration = updateTrackDto.duration;

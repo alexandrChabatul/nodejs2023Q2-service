@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -10,17 +10,19 @@ import {
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   login: string;
-  @Exclude()
   @Column()
+  @Exclude()
   password: string;
   @VersionColumn()
   version: number;
   @CreateDateColumn()
-  createdAt: number;
+  @Transform(({ value }) => value.getTime())
+  createdAt: Date;
   @UpdateDateColumn()
-  updatedAt: number;
+  @Transform(({ value }) => value.getTime())
+  updatedAt: Date;
 }

@@ -22,10 +22,11 @@ export class UsersService {
       createUserDto.password,
       this.saltOrRounds,
     );
-    return await this.userRepository.save({
+    const user = await this.userRepository.save({
       login: createUserDto.login,
       password,
     });
+    return this.findOne(user.id);
   }
 
   async findAll() {
@@ -33,7 +34,9 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    return await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
@@ -50,6 +53,8 @@ export class UsersService {
   }
 
   async remove(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException();
     return await this.userRepository.delete({ id });
   }
 }
