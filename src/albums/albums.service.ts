@@ -22,7 +22,8 @@ export class AlbumsService {
   }
 
   async findOne(id: string) {
-    const album = this.albumsRepository.findOneBy({ id });
+    const album = await this.albumsRepository.findOne({ where: { id } });
+    console.log(album);
     if (!album) throw new NotFoundException();
     return album;
   }
