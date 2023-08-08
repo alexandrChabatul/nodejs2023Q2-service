@@ -1,15 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity('users')
 export class Album {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
   name: string;
+  @Column()
   year: number;
+  @ManyToOne(() => Artist, (artist) => artist.albums)
   artistId: string | null;
-
-  constructor(year: number, name: string, artistId: string | null) {
-    this.id = uuidv4();
-    this.year = year;
-    this.name = name;
-    this.artistId = artistId;
-  }
 }
