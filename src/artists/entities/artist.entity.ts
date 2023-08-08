@@ -1,13 +1,11 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity('artists')
 export class Artist {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
   name: string;
+  @Column()
   grammy: boolean;
-
-  constructor(name: string, grammy: boolean) {
-    this.id = uuidv4();
-    this.name = name;
-    this.grammy = grammy;
-  }
 }
