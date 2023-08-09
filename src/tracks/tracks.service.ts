@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { favorites, tracks } from '../data/storage';
 import { Track } from './entities/track.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,7 +13,7 @@ export class TracksService {
   ) {}
 
   async create(createTrackDto: CreateTrackDto) {
-    return await this.tracksRepository.create(createTrackDto);
+    return await this.tracksRepository.save(createTrackDto);
   }
 
   async findAll() {
@@ -22,20 +21,25 @@ export class TracksService {
   }
 
   async findOne(id: string) {
-    const track = this.tracksRepository.findOneBy({ id });
+    const track = await this.tracksRepository.findOne({
+      where: { id },
+    });
     if (!track) throw new NotFoundException();
     return track;
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    await this.findOne(id);
-    await this.tracksRepository.update({ id }, updateTrackDto);
+    const track = await this.findOne(id);
+    track.albumId = updateTrackDto.albumId;
+    track.artistId = updateTrackDto.artistId;
+    track.name = updateTrackDto.name;
+    track.duration = updateTrackDto.duration;
+    await this.tracksRepository.save(track);
     return await this.findOne(id);
   }
 
   async remove(id: string) {
     await this.findOne(id);
     return await this.tracksRepository.delete({ id });
-    // favorites.removeTrack(id);
   }
 }

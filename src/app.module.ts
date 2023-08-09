@@ -32,7 +32,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
         synchronize: true,
         autoLoadEntities: true,
-        logging: true,
+        // logging: true,
       }),
     }),
   ],

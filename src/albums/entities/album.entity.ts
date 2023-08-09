@@ -1,10 +1,12 @@
 import { Artist } from 'src/artists/entities/artist.entity';
+import { AlbumsFavorite } from 'src/favorites/entities/albums-favorites.entity';
 import { Track } from 'src/tracks/entities/track.entity';
 import {
   Column,
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -16,9 +18,18 @@ export class Album {
   name: string;
   @Column()
   year: number;
-  @ManyToOne(() => Artist, (artist) => artist.albums)
-  artistId: string | null;
-  @Column({ array: true, default: [] })
-  @OneToMany(() => Track, (track) => track.artistId)
-  tracks: string;
+
+  @Column({ nullable: true, default: null })
+  artistId: string;
+
+  @ManyToOne(() => Artist, (artist) => artist.albums, {
+    nullable: false,
+  })
+  artist: Artist;
+
+  @OneToMany(() => Track, (track) => track.album)
+  tracks: Track[];
+
+  @OneToOne(() => AlbumsFavorite, (favorite) => favorite.album)
+  favorite: AlbumsFavorite;
 }
