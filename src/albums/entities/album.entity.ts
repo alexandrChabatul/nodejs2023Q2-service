@@ -1,12 +1,10 @@
 import { Artist } from 'src/artists/entities/artist.entity';
-import { AlbumsFavorite } from 'src/favorites/entities/albums-favorites.entity';
 import { Track } from 'src/tracks/entities/track.entity';
 import {
   Column,
   Entity,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
