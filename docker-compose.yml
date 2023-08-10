@@ -1,6 +1,6 @@
 version: '3.8'
 
-services: 
+services:
   db:
     container_name: postgres-node
     image: postgres
@@ -9,11 +9,22 @@ services:
       - POSTGRES_USER=${TYPEORM_USERNAME}
       - POSTGRES_PASSWORD=${TYPEORM_PASSWORD}
       - POSTGRES_DB=${TYPEORM_DATABASE}
-    volumes: 
+    volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: production
+    env_file:
+      - .env
+    command: npm run start
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
 
 volumes:
   pgdata:
