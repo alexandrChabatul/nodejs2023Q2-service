@@ -12,7 +12,13 @@ export class TracksFavorite {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Track, (track) => track.favorite)
+  @Column({ nullable: false })
+  trackId: string;
+
+  @OneToOne(() => Track, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   @JoinColumn()
   track: Track;
 }

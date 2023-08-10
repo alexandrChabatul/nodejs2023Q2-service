@@ -24,12 +24,12 @@ export class Album {
 
   @ManyToOne(() => Artist, (artist) => artist.albums, {
     nullable: false,
+    onDelete: 'SET NULL',
   })
   artist: Artist;
 
-  @OneToMany(() => Track, (track) => track.album)
+  @OneToMany(() => Track, (track) => track.album, {
+    onDelete: 'CASCADE',
+  })
   tracks: Track[];
-
-  @OneToOne(() => AlbumsFavorite, (favorite) => favorite.album)
-  favorite: AlbumsFavorite;
 }

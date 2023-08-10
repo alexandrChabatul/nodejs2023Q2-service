@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,7 +13,13 @@ export class ArtistsFavorite {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Artist, (artist) => artist.favorite)
-  @JoinColumn()
+  @Column({ nullable: false })
+  artistId: string;
+
+  @OneToOne(() => Artist, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn({ name: 'artistId' })
   artist: Artist;
 }
