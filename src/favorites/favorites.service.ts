@@ -1,12 +1,5 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AlbumsService } from 'src/albums/albums.service';
-import { ArtistsService } from 'src/artists/artists.service';
-import { TracksService } from 'src/tracks/tracks.service';
 import { Repository } from 'typeorm';
 import { Album } from '../albums/entities/album.entity';
 import { Artist } from '../artists/entities/artist.entity';

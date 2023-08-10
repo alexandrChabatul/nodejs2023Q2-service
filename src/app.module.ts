@@ -8,6 +8,7 @@ import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppConfig, DatabaseConfig } from './config';
 
 @Module({
   imports: [
@@ -18,22 +19,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     FavoritesModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      cache: true,
+      load: [AppConfig, DatabaseConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
-        type: config.get<'postgres'>('TYPEORM_CONNECTION'),
-        username: config.get<string>('TYPEORM_USERNAME'),
-        password: config.get<string>('TYPEORM_PASSWORD'),
-        database: config.get<string>('TYPEORM_DATABASE'),
-        ports: config.get<number>('TYPEORM_PORT'),
-        entities: [__dirname + config.get<string>('TYPEORM_ENTITIES')],
-        synchronize: config.get<boolean>('TYPEORM_SYNCHRONIZE'),
-        autoLoadEntities: false,
-        logging: config.get<boolean>('TYPEORM_LOGGING'),
+      useFactory: (configService: ConfigService) => ({
+        ...configService.get('database'),
       }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],
