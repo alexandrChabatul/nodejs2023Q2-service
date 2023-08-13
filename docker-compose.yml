@@ -20,9 +20,8 @@ services:
       target: production
     env_file:
       - .env
-    command: npm run start
     ports:
-      - 3000:3000
+      - 4000:4000
     depends_on:
       - db
 
