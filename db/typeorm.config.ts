@@ -11,7 +11,7 @@ export default new DataSource({
   username: configService.get<string>('TYPEORM_USERNAME'),
   password: configService.get<string>('TYPEORM_PASSWORD'),
   database: configService.get<string>('TYPEORM_DATABASE'),
-  host: configService.get<string>('TYPEORM_HOST'),
+  host: configService.get<string>('TYPEORM_HOST') || 'localhost',
   port: configService.get<number>('TYPEORM_PORT'),
   entities: [`${__dirname}/../src/**/*.entity{.ts,.js}`],
   synchronize: configService.get('TYPEORM_SYNCHRONIZE') === 'true',

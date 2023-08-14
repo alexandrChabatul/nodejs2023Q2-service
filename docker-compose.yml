@@ -12,18 +12,26 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - ${TYPEORM_PORT}:5432
+    networks:
+      - container
   api:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: production
+    restart: on-failure
+    container_name: node_server
+    image: sashkill94/alex-repository:node_server
     env_file:
       - .env
+    environment:
+      - TYPEORM_HOST=db
     ports:
-      - 4000:4000
+      - ${PORT}:${PORT}
     depends_on:
       - db
+    networks:
+      - container
 
 volumes:
   pgdata:
+
+networks:
+  container:

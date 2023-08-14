@@ -11,7 +11,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = await app.get(ConfigService);
   const port = config.get<number>('PORT') || 3000;
-  const apiSpecPath = join(__dirname, '../doc/api.yaml');
+  // const path = congig.get<string>('MODE') === 'PRODUCTION' ? '../doc/api.yaml' : '..src/doc/api.yaml'
+  const apiSpecPath = join(__dirname, '../../doc/api.yaml');
   const apiSpec = yaml.load(readFileSync(apiSpecPath, 'utf8'));
   SwaggerModule.setup('api', app, apiSpec);
 
