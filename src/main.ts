@@ -6,17 +6,18 @@ import * as yaml from 'js-yaml';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { SwaggerModule } from '@nestjs/swagger';
+import { AllExceptionsFilter } from './utils/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = await app.get(ConfigService);
   const port = config.get<number>('PORT') || 3000;
-  // const path = congig.get<string>('MODE') === 'PRODUCTION' ? '../doc/api.yaml' : '..src/doc/api.yaml'
   const apiSpecPath = join(__dirname, '../../doc/api.yaml');
   const apiSpec = yaml.load(readFileSync(apiSpecPath, 'utf8'));
   SwaggerModule.setup('api', app, apiSpec);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(port, () => {
     console.log(`Server was started on ${port}`);
   });

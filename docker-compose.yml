@@ -29,9 +29,12 @@ services:
       - db
     networks:
       - container
+    volumes:
+      - logs
 
 volumes:
   pgdata:
+  logs:
 
 networks:
   container:
