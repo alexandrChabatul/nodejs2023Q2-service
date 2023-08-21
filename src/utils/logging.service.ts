@@ -2,24 +2,52 @@ import { LoggerService } from '@nestjs/common';
 import * as fs from 'fs';
 
 export class LoggingService implements LoggerService {
+  private static fileCount = 1;
+  private logLevel: number;
+  private logLimit: number;
+
+  constructor() {
+    this.logLevel = +process.env.LOGS_LEVEL || 3;
+    this.logLimit = +process.env.LOGS_FILE_LIMIT || 10000;
+  }
+
   log(message: any) {
+    if (this.logLevel < 1) return;
     console.log(message);
-    fs.appendFile('logs.log', message + '\n', 'utf8', (err) => {
-      if (err) throw err;
-    });
+    this.writeToFile(message);
   }
 
   error(message: any) {
+    if (this.logLevel < 3) return;
     console.error(message);
-    fs.appendFile('logs.log', `ERROR \n ${message} + \n`, 'utf8', (err) => {
-      if (err) throw err;
-    });
+    this.writeToFile(message);
   }
 
   warn(message: any) {
+    if (this.logLevel < 2) return;
     console.warn(message);
-    fs.appendFile('logs.log', message + '\n', 'utf8', (err) => {
-      if (err) throw err;
-    });
+    this.writeToFile(message);
+  }
+
+  writeToFile(message: any) {
+    try {
+      fs.statSync(`./logs`);
+    } catch (e) {
+      fs.mkdir('logs', (err) => console.log(err));
+    }
+    try {
+      const stats = fs.statSync(`./logs/logs_${LoggingService.fileCount}.log`);
+      if (stats.size >= this.logLimit) LoggingService.fileCount++;
+    } catch (e) {
+      console.log(e);
+    }
+    fs.appendFile(
+      `./logs/logs_${LoggingService.fileCount}.log`,
+      message + '\n',
+      'utf8',
+      (err) => {
+        if (err) console.log(err);
+      },
+    );
   }
 }
