@@ -3,6 +3,7 @@ import * as fs from 'fs';
 
 export class LoggingService implements LoggerService {
   private static fileCount = 1;
+  private static errorFileCount = 1;
   private logLevel: number;
   private logLimit: number;
 
@@ -43,6 +44,30 @@ export class LoggingService implements LoggerService {
     }
     fs.appendFile(
       `./logs/logs_${LoggingService.fileCount}.log`,
+      message + '\n',
+      'utf8',
+      (err) => {
+        if (err) console.log(err);
+      },
+    );
+  }
+
+  writeError(message: any) {
+    try {
+      fs.statSync(`./logs`);
+    } catch (e) {
+      fs.mkdir('logs', (err) => console.log(err));
+    }
+    try {
+      const stats = fs.statSync(
+        `./logs/logs_error_${LoggingService.errorFileCount}.log`,
+      );
+      if (stats.size >= this.logLimit) LoggingService.errorFileCount++;
+    } catch (e) {
+      console.log(e);
+    }
+    fs.appendFile(
+      `./logs/logs_error_${LoggingService.errorFileCount}.log`,
       message + '\n',
       'utf8',
       (err) => {
