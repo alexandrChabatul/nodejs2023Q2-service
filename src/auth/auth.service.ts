@@ -9,6 +9,7 @@ import { UsersService } from '../users/users.service';
 import { TokenService } from './token.service';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/entities/user.entity';
+import { RefreshTokenDto } from './dto/refrtesh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -42,7 +43,8 @@ export class AuthService {
     return data;
   }
 
-  async refresh(refreshToken: string) {
+  async refresh(refreshTokenDto: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenDto;
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
