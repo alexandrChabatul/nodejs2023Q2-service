@@ -37,6 +37,11 @@ export class UsersService {
     return user;
   }
 
+  async findOneByLogin(login: string) {
+    const user = await this.userRepository.findOne({ where: { login } });
+    return user;
+  }
+
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const user = await this.findOne(id);
     if (!user) throw new NotFoundException();
