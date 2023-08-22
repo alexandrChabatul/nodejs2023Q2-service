@@ -30,7 +30,7 @@ services:
     networks:
       - container
     volumes:
-      - logs
+      - logs:/src
 
 volumes:
   pgdata:
