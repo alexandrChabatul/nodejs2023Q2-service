@@ -2,47 +2,47 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
-import { albums, artists, favorites, tracks } from '../data/storage';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
-  create(createArtistDto: CreateArtistDto) {
-    const artist: Artist = new Artist(
-      createArtistDto.name,
-      createArtistDto.grammy,
-    );
-    artists.push(artist);
-    return artist;
+  constructor(
+    @InjectRepository(Artist)
+    private readonly artistRepository: Repository<Artist>,
+  ) {}
+
+  async create(createArtistDto: CreateArtistDto) {
+    return await this.artistRepository.save(createArtistDto);
   }
 
-  findAll() {
-    return artists;
+  async findAll() {
+    return await this.artistRepository.find();
   }
 
-  findOne(id: string) {
-    const artist = artists.find((a) => a.id === id);
+  async findOne(id: string) {
+    const artist = await this.artistRepository.findOne({ where: { id } });
     if (!artist) throw new NotFoundException();
     return artist;
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    const artist = artists.find((u) => u.id === id);
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    const artist = await this.findOne(id);
     if (!artist) throw new NotFoundException();
-    artist.grammy = updateArtistDto.grammy;
-    artist.name = updateArtistDto.name;
-    return artist;
+    await this.artistRepository.update({ id }, updateArtistDto);
+    return await this.findOne(id);
   }
 
-  remove(id: string) {
-    const index = artists.findIndex((u) => u.id === id);
-    if (index === -1) throw new NotFoundException();
-    artists.splice(index, 1);
-    favorites.removeArtist(id);
-    tracks.forEach((t) => {
-      if (t.artistId === id) t.artistId = null;
-    });
-    albums.forEach((a) => {
-      if (a.artistId === id) a.artistId = null;
-    });
+  async remove(id: string) {
+    const artist = await this.artistRepository.findOne({ where: { id } });
+    if (!artist) throw new NotFoundException();
+    return await this.artistRepository.delete({ id });
+    // favorites.removeArtist(id);
+    // tracks.forEach((t) => {
+    //   if (t.artistId === id) t.artistId = null;
+    // });
+    // albums.forEach((a) => {
+    //   if (a.artistId === id) a.artistId = null;
+    // });
   }
 }

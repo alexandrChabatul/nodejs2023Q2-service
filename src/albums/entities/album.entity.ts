@@ -1,15 +1,33 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { Track } from 'src/tracks/entities/track.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
+@Entity('albums')
 export class Album {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
   name: string;
+  @Column()
   year: number;
-  artistId: string | null;
 
-  constructor(year: number, name: string, artistId: string | null) {
-    this.id = uuidv4();
-    this.year = year;
-    this.name = name;
-    this.artistId = artistId;
-  }
+  @Column({ nullable: true, default: null })
+  artistId: string;
+
+  @ManyToOne(() => Artist, (artist) => artist.albums, {
+    nullable: false,
+    onDelete: 'SET NULL',
+  })
+  artist: Artist;
+
+  @OneToMany(() => Track, (track) => track.album, {
+    onDelete: 'CASCADE',
+  })
+  tracks: Track[];
 }
